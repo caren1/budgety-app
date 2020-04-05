@@ -1,6 +1,30 @@
 // BUDGET CONTROLLER
 var budgetController = (() => {
 
+    var Expense = (id, descirption, value) => {
+        this.id = id;
+        this.descirption = descirption;
+        this.value = value;
+    };
+
+    var Income = (id, descirption, value) => {
+        this.id = id;
+        this.descirption = descirption;
+        this.value = value;
+    };
+
+    var data = {
+        allItems: {
+            exp: [],
+            incomes: []
+        },
+
+        totals: {
+            exp: 0,
+            inc: 0
+        }
+    }
+
     return {
 
     };
