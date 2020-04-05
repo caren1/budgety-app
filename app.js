@@ -1,10 +1,7 @@
 // BUDGET CONTROLLER
-var budgetController = (function () {
-
-
+var budgetController = (() => {
 
     return {
-
 
     };
 
@@ -12,18 +9,17 @@ var budgetController = (function () {
 
 
 // UI CONTROLLER
-var UIController = (function () {
+var UIController = (() => {
 
     var DOMstrings = {
         inputType: '.add__type',
         inputDescription: '.add__description',
         inputValue: '.add__value',
-        inputBtn = '.add__btn'
+        inputBtn: '.add__btn'
     };
 
     return {
-        getinput: function () {
-
+        getinput: () => {
             return {
                 // either inc or exp (income (-) & expense (+))
                 type: document.querySelector(DOMstrings.inputType).value,
@@ -32,10 +28,10 @@ var UIController = (function () {
             };
         },
 
-        getDOMstrings: function(){
+        getDOMstrings: () => {
             return DOMstrings;
         }
-        
+
     };
 
 })();
@@ -44,32 +40,40 @@ var UIController = (function () {
 // GLOBAL APP CONTROLLER
 var controller = (function (budgetCtrl, UICtrl) {
 
-    var DOM = UICtrl.getDOMstrings;
+    var setupEventListeners = () => {
+        var DOM = UICtrl.getDOMstrings();
 
+        document.querySelector(DOM.inputBtn).addEventListener('click', ctrlAddItem);
 
-    var ctrlAddItem = function () {
+        document.addEventListener('keypress', (event) => {
+            if (event.keyCode === 13 || event.which === 13) {
+                ctrlAddItem();
+            }
+        });
+    };
+
+    var ctrlAddItem = () => {
 
         // 1. get filled input data 
         var input = UICtrl.getinput();
-        
-        
-        
+        console.log(input);
+
+
         // 2. add the item to the budget controller
         // 3. add the new item to the user interface
         // 4. calculate the budget
         // 5. Display the budget on the UI
-    }
-
-    document.querySelector(DOM.inputBtn).addEventListener('click', ctrlAddItem);
-
-    document.addEventListener('keypress', (event) => {
-        if (event.keyCode === 13 || event.which === 13) {
-            ctrlAddItem();
-        }
-    });
+    };
 
     return {
 
-    }
+        init: () => {
+            console.log('Application has started.');
+            setupEventListeners();
+        }
+
+    };
 
 })(budgetController, UIController);
+
+controller.init();
