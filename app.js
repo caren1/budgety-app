@@ -1,13 +1,13 @@
 // BUDGET CONTROLLER
 var budgetController = (() => {
 
-    var Expense = function(id, descirption, value) {
+    var Expense = function (id, descirption, value) {
         this.id = id;
         this.descirption = descirption;
         this.value = value;
     };
 
-    var Income = function(id, descirption, value) {
+    var Income = function (id, descirption, value) {
         this.id = id;
         this.descirption = descirption;
         this.value = value;
@@ -42,10 +42,10 @@ var budgetController = (() => {
             } else if (type === 'inc') {
                 newItem = new Income(ID, des, val);
             }
-            
+
             // Push it into our data structure
             data.allItems[type].push(newItem);
-            
+
             // Return the new element
             return newItem;
         }
@@ -98,6 +98,17 @@ var UIController = (() => {
 
         },
 
+        clearFields: () => {
+            var fields, fieldsArr;
+            fields = document.querySelectorAll(DOMstrings.inputDescription + ',' + DOMstrings.inputValue);
+            fieldsArr = Array.prototype.slice.call(fields);
+            fieldsArr.forEach(function(current, index, array) {
+                current.value = "";
+            });
+            fieldsArr[0].focus();
+            
+        },
+
         getDOMstrings: () => {
             return DOMstrings;
         }
@@ -134,6 +145,8 @@ var controller = (function (budgetCtrl, UICtrl) {
 
         // 3. add the new item to the user interface
         UICtrl.addListItem(newItem, input.type);
+        // 3.5 clearing out input fields 
+        UICtrl.clearFields();
         // 4. calculate the budget
         // 5. Display the budget on the UI
     };
