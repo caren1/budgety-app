@@ -6,6 +6,22 @@ var budgetController = (() => {
         this.id = id;
         this.descirption = descirption;
         this.value = value;
+        this.percentage = -1;
+    };
+
+
+    // Calculating the percentage for indiviudal item
+    Expense.prototype.calcPercentage = function (totalIncome) {
+        if (totalIncome > 0) {
+            this.percentage = Math.round((this.value / totalIncome) * 100);
+        } else {
+            this.percentage = -1;
+        }
+    };
+
+    // Returning the calcuated percentage
+    Expense.prototype.getPercentage = function () {
+        return this.percentage;
     };
 
     // constructor function for Income
@@ -100,6 +116,19 @@ var budgetController = (() => {
             } else {
                 data.percentage = -1;
             }
+        },
+
+        calculatePercentages: function () {
+            data.allItems.exp.forEach(function (cur) {
+                cur.calcPercentage(data.totals.inc);
+            });
+        },
+
+        getPercentages: function () {
+            var allPerc = data.allItems.exp.map(function (cur) {
+                return cur.getPercentage();
+            });
+            return allPerc;
         },
 
         // Allowing to access the budget data
@@ -241,27 +270,43 @@ var controller = (function (budgetCtrl, UICtrl) {
         // Displaying the budget on the UI
         UICtrl.displayBudget(budget);
 
-    }
+    };
+
+    var updatePercentages = function () {
+        // 1. Calculating percentages
+        budgetCtrl.calculatePercentages();
+
+        // 2. Read percentages from the budget controller
+        var percentages = budgetCtrl.getPercentages();
+
+        // 3. Update the UI with new percentages
+        console.log(percentages);
+
+    };
 
     var ctrlAddItem = () => {
         var input;
         var newItem;
 
-        // 1. get filled input data 
+        // 1. Get filled input data 
         input = UICtrl.getinput();
 
         if (input.description !== "" && !isNaN(input.value) && input.value > 0) {
-            // 2. add the item to the budget controller
+            // 2. Add the item to the budget controller
             newItem = budgetCtrl.addItem(input.type, input.description, input.value);
 
-            // 3. add the new item to the user interface
+            // 3. Add the new item to the user interface
             UICtrl.addListItem(newItem, input.type);
 
-            // 3.5 clearing out input fields 
+            // 3.5 Clearing out input fields 
             UICtrl.clearFields();
 
-            // 4. Calculate and update the budget
+            // 4. Calculating and updating the budget
             updateBudget();
+
+            // 5 Calculating and updating percentages
+            updatePercentages();
+
         }
     };
 
@@ -280,9 +325,12 @@ var controller = (function (budgetCtrl, UICtrl) {
 
             //2 delete the item from the UI
             UICtrl.deleteListItem(itemID);
+
             //3 re-calculate the budget and update the UI
             updateBudget();
-            
+
+            // 4 Calculating and updating percentages
+            updatePercentages();
 
         }
     };
